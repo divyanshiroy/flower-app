@@ -1,7 +1,20 @@
+# server.py
+import threading
 import flwr as fl
-import os
+from fastapi import FastAPI
+import uvicorn
 
-if __name__ == "__main__":
+app = FastAPI()
+
+@app.get("/")
+def read_root():
+    return {"message": "Flower Server is running."}
+
+def start_flower():
     strategy = fl.server.strategy.FedAvg()
-    port = os.environ.get("PORT", 10000)  # Default to 10000 if PORT not set
-    fl.server.start_server(server_address=f"0.0.0.0:{port}", strategy=strategy)
+    fl.server.start_server(server_address="0.0.0.0:8080", strategy=strategy)
+
+# Start Flower in a background thread
+threading.Thread(target=start_flower).start()
+
+# This file will now serve both FastAPI (port 10000) and Flower (port 8080)
