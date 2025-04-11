@@ -1,1 +1,3 @@
 flwr
+fastapi
+uvicorn
